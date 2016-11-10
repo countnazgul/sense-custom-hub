@@ -1,0 +1,91 @@
+/**
+* set padding to make room for bootstrap menu
+*
+*/
+body {
+	padding-bottom: 30px;
+}
+
+/*
+* need to set the height for objects
+* set top padding to make room for selection toolbar
+*/
+div.qvobject, div.qvplaceholder {
+	padding: 30px 10px 10px 10px;
+	height: 400px;
+}
+
+#main {
+	width: 100%;
+	padding: 0;
+}
+
+.image-header {
+	display: table;
+	position: relative;
+	margin-top: -20px;
+	width: 100%;
+	height: 30%;
+	background: url(../media/images/leaf.jpg) no-repeat center center scroll;
+	-webkit-background-size: cover;
+	-moz-background-size: cover;
+	background-size: cover;
+	-o-background-size: cover;
+	z-index: -99;
+
+}
+
+.content-section-a {
+	background-color: #ECF0F1;
+}
+
+.navbar {
+	margin-bottom: 0 !important;
+}
+
+.navbar-brand {
+	max-width: 345px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+/*
+ * Overrides Bootstrap navbar z-index to avoid conflict with selections bar
+ */
+.navbar-fixed-top {
+	position: relative;
+	z-index: 100;
+}
+
+.qcmd {
+	cursor: pointer;
+}
+
+#footer {
+	background-color: #FEC956;
+	text-align: center;
+	padding-top: 30px;
+	padding-bottom: 30px;
+	margin-bottom: -30px;
+}
+
+#popup {
+	background-color: #7f8c8d;
+	color: #FFFFFF;
+	position: fixed;
+	padding: 10px;
+	margin: 10px;
+	bottom: 0;
+	right: 0;
+	display: none;
+	border-radius: 5px;
+}
+
+.borderShadow {
+	margin: 15px 0;
+	background-color: #FFFFFF;
+	-webkit-box-shadow: 0 0 16px -5px rgba(50, 50, 50, 0.52);
+	-moz-box-shadow: 0 0 16px -5px rgba(50, 50, 50, 0.52);
+	box-shadow: 0 0 16px -5px rgba(50, 50, 50, 0.52);
+}
