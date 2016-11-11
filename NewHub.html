@@ -27,30 +27,83 @@
 			display: flex;
 			justify-content: center;
 			align-items: center;
-			padding-top: 30px
+			padding-top: 5px;
 		}
 		
 		.pixel-border {
-			border: 1px solid grey;
-			background-color: #555;
+			border: 1px solid lightgray;
+			background-color: white;
 			color: white;
 		}
+		
+		a:link,
+		a:visited,
+		a:hover,
+		a:active {
+			color: gray;
+			font-weight: bold;
+		}
+		
+		body {
+			background-color: #f2f2f2
+		}
+
+		
 	</style>
 
 </head>
 
 <body role="document" style="overflow: auto">
+	<button type="button" class="btn btn-success glyphicon glyphicon-plus" style="float: right; margin: 5px; height: 31px; background-color: #5fa945"
+		data-toggle="modal" data-target="#myModal"></button>
 	<div class="container1">
-		<div class="col-lg-9">
+		<div class="col-lg-10">
 			<input id="search" type="text" class="form-control" />
 		</div>
 	</div>
 
 	<div class="container" style="padding-top: 30px">
-		<div id="qsapps" class="block-grid-xs-1 block-grid-sm-2 block-grid-md-3 block-grid-lg-4">
+		<div id="qsapps" class="block-grid-xs-1 block-grid-sm-2 block-grid-md-3 block-grid-lg-1">
 
 		</div>
 	</div>
+
+	<!-- Modal -->
+	<div id="myModal" class="modal fade" role="dialog" tabindex='-1'>
+		<div class="modal-dialog">
+
+			<!-- Modal content-->
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+					<h4 class="modal-title">Create new app</h4>
+				</div>
+				<div class="modal-body">
+					<div class="form-group">
+						<label for="usr">Name:</label>
+						<input type="text" class="form-control" id="newappname">
+					</div>
+					<div class="form-group">
+						<label for="pwd">Description:</label>
+						<textarea class="form-control" rows="5" id="newappdescription"></textarea>
+					</div>
+					<div class="checkbox">
+						<label><input type="checkbox" checked value="">Open after create?</label>
+					</div>
+					<div class="checkbox">
+						<label><input type="checkbox" checked value="">Prepopulate sample script?</label>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-success" data-dismiss="modal" id="newappcreate">Create</button>
+					<button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+				</div>
+			</div>
+
+		</div>
+	</div>
+
+
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
 	<script src="./js/jquery.easy-autocomplete.min.js"></script>
