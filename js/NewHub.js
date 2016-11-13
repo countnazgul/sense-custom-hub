@@ -307,6 +307,7 @@ require(["js/qlik", './js/qsocks.bundle.js', './js/jquery.noty.packaged.min.js']
 		qsGlobal.productVersion()
 			.then(function (qsVersion) {
 				qsVersion = qsVersion.substr(0, qsVersion.indexOf('+'));
+
 				$('#qsVersion').text(qsVersion);
 			})
 			.catch(function (err) {
@@ -345,7 +346,7 @@ require(["js/qlik", './js/qsocks.bundle.js', './js/jquery.noty.packaged.min.js']
 
 				var disabled = 'opacity: 1';
 				var disabledText = '';
-				if(qsIsDesktopMode == true) {
+				if (qsIsDesktopMode == true) {
 					disabled = 'opacity: 0.2'
 					disabledText = ' (Not available in desktop mode.)'
 				}
@@ -353,11 +354,12 @@ require(["js/qlik", './js/qsocks.bundle.js', './js/jquery.noty.packaged.min.js']
 				var images = `
 					<span style="color: darkgrey">#`+ streamName + `</span>
 					<img src="./media/images/line.png">
+					<a href="`+ host + `sense/app/` + encodeURIComponent(doc.qDocId) + `" target="_blank"><img src="./media/images/overview.png" title="App Overview"></a>
 					<a href="`+ host + `sense/app/` + encodeURIComponent(doc.qDocId) + `/datamanager/datamanager" target="_blank"><img src="./media/images/datamanager.png" title="Data Manager"></a>
 					<a href="`+ host + `dataloadeditor/app/` + encodeURIComponent(doc.qDocId) + `" target="_blank"><img src="./media/images/dataeditor.png" title="Data Editor"></a>
 					<a href="`+ host + `datamodelviewer/app/` + encodeURIComponent(doc.qDocId) + `" target="_blank"><img src="./media/images/datamodel.png" title="Data Model Viewer"></a>
 					<img src="./media/images/line.png">
-					<a href="#" class="duplicateapp" data-appid="`+ doc.qDocId + `" data-appname="` + doc.qTitle + `" style="`+disabled+`"><img src="./media/images/copy.png" title="Duplicate app `+disabledText+`"></a>
+					<a href="#" class="duplicateapp" data-appid="`+ doc.qDocId + `" data-appname="` + doc.qTitle + `" style="` + disabled + `"><img src="./media/images/copy.png" title="Duplicate app ` + disabledText + `"></a>
 					<a href="#" class="deleteapp" data-appid="`+ doc.qDocId + `" data-appname="` + doc.qTitle + `"><img src="./media/images/delete.png" title="Delete app" ></a>
 				`;
 
