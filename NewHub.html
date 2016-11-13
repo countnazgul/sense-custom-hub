@@ -58,18 +58,18 @@
 						<label for="usr">Name:</label>
 						<input type="text" class="form-control" id="newappname">
 					</div>
-					<div class="form-group">
+					<!--<div class="form-group">
 						<label for="pwd">Description:</label>
 						<textarea class="form-control" rows="5" id="newappdescription"></textarea>
-					</div>
+					</div>-->
 					<div class="form-group">
 						<div class="row">
-							<div class="col-xs-4">
+							<div class="col-xs-5">
 								<div class="checkbox" style="float: left">
-									<label><input type="checkbox" checked value="">Open after create?</label>
+									<label><input id="openoncreate" type="checkbox" checked value="">Open after create?</label>
 								</div>
 							</div>
-							<div class="col-xs-8">
+							<div class="col-xs-7">
 								<div id="radioBtn" class="btn-group">
 									<a class="btn btn-default btn-sm active" data-toggle="open" data-title="editor">Data Editor</a>
 									<a class="btn btn-default btn-sm notActive" data-toggle="open" data-title="overview">App Overview</a>
@@ -77,13 +77,13 @@
 								</div>
 							</div>
 						</div>
-						<div class="row">
+						<!--<div class="row">
 							<div class="col-xs-12">
 								<div class="checkbox">
 									<label><input type="checkbox" value="">Pre-populate sample script?</label>
 								</div>
 							</div>
-						</div>
+						</div>-->
 					</div>
 				</div>
 				<div class="modal-footer">
@@ -114,6 +114,8 @@
 			</div>
 		</div>
 	</div>
+
+	<a id="navigate" href="#" target="_blank" style="display: none"></a>
 
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>

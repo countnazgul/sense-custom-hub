@@ -9,6 +9,7 @@ var config = {
 };
 
 var qsGlobal = {};
+var qsIsDesktopMode = false;
 
 var port = config.port;
 
@@ -29,6 +30,15 @@ require(["js/qlik", './js/qsocks.bundle.js', './js/jquery.noty.packaged.min.js']
 	var areas = [];
 	var qsApps = [];
 	var qsAreas = [];
+
+	qsocks.Connect(config).then(global => {
+		qsGlobal = global;
+
+		qsGlobal.isDesktopMode().then(function (isDesktopMode) {
+			qsIsDesktopMode = isDesktopMode;
+			Main();
+		})
+	})
 
 	function showNotification(text, type) {
 		var n = noty({
@@ -151,9 +161,16 @@ require(["js/qlik", './js/qsocks.bundle.js', './js/jquery.noty.packaged.min.js']
 		return ((aName < bName) ? -1 : ((aName > bName) ? 1 : 0));
 	}
 
+	var rbtTitle = '';
+	var rbtToggle = '';
+
 	$('#radioBtn a').on('click', function () {
 		var sel = $(this).data('title');
 		var tog = $(this).data('toggle');
+
+		rbtToggle = tog;
+		rbtTitle = sel;
+
 		$('#' + tog).prop('value', sel);
 
 		$('a[data-toggle="' + tog + '"]').not('[data-title="' + sel + '"]').removeClass('active').addClass('notActive');
@@ -176,19 +193,36 @@ require(["js/qlik", './js/qsocks.bundle.js', './js/jquery.noty.packaged.min.js']
 
 	$('#newappcreate').on('click', function (e) {
 		if ($.trim($('#newappname').val()).length > 0) {
+			var newApp = {};
 			qsGlobal.createApp($('#newappname').val())
 				.then(function (app) {
+					newApp = app;
 					$('#myModal').modal('hide');
-					$('#newappname').val('');
 					showNotification('"' + $('#newappname').val() + '" created!', 'success')
+					$('#newappname').val('');
 
-					Main();
-					// var link = document.createElement('a');
-					// link.href = url;
-					// document.body.appendChild(link);
-					// link.click();
+					return Main();
+				})
+				.then(function () {
 
-					return console.log(app)
+					href = host + 'dataloadeditor/app/' + encodeURIComponent(newApp.qAppId);
+					if ($('#openoncreate').prop('checked') == true) {
+						switch (rbtTitle) {
+							case "editor":
+								href = host + 'dataloadeditor/app/' + encodeURIComponent(newApp.qAppId);
+								break;
+							case "overview":
+								href = host + "sense/app/" + encodeURIComponent(newApp.qAppId)
+								break;
+							case "manager":
+								href = host + 'sense/app/' + encodeURIComponent(newApp.qAppId) + '/datamanager/datamanager';
+								break;
+						}
+
+						$('#navigate').attr('href', href);
+						$('#navigate')[0].click();
+						$('#navigate').attr('href', '#');
+					}
 				})
 				.catch(function (err) {
 					modalError(err.message);
@@ -233,27 +267,21 @@ require(["js/qlik", './js/qsocks.bundle.js', './js/jquery.noty.packaged.min.js']
 	// });
 
 	$(document).on('click', ".duplicateapp", function () {
-		var appId = $(this).attr('data-appid');
-		var appName = $(this).attr('data-appname');
+		if (qsIsDesktopMode == false) {
+			var appId = $(this).attr('data-appid');
+			var appName = $(this).attr('data-appname');
 
-		appName = appName + ' ' + Date.now();
+			appName = appName + ' ' + Date.now();
 
-		qsGlobal.createApp(appName)
-			.then(function (app) {
+			// qsGlobal.createApp(appName)
+			// 	.then(function (app) {
 
-				showNotification('"' + appName + '" created!', 'success')
-
-				Main();
-				// var link = document.createElement('a');
-				// link.href = url;
-				// document.body.appendChild(link);
-				// link.click();
-
-				return console.log(app)
-			})
-			.catch(function (err) {
-				modalError(err.message);
-			})
+			// 		showNotification('"' + appName + '" created!', 'success')
+			// 		return Main();
+			// 	})
+			// 	.then(function () {
+			// 		var href = '';
+		}
 	});
 
 	$('#deleteapp').on('click', function (e) {
@@ -270,11 +298,7 @@ require(["js/qlik", './js/qsocks.bundle.js', './js/jquery.noty.packaged.min.js']
 			});
 	});
 
-	qsocks.Connect(config).then(global => {
-		qsGlobal = global;
-		Main();
 
-	})
 
 	function Main() {
 		$('#qsapps').empty()
@@ -289,7 +313,7 @@ require(["js/qlik", './js/qsocks.bundle.js', './js/jquery.noty.packaged.min.js']
 				showNotification(err.message, 'error');
 			});
 
-		qsGlobal.getDocList().then(function (docList) {
+		return qsGlobal.getDocList().then(function (docList) {
 			docList.sort(SortByTitle)
 			for (var d = 0; d < docList.length; d++) {
 
@@ -319,6 +343,13 @@ require(["js/qlik", './js/qsocks.bundle.js', './js/jquery.noty.packaged.min.js']
 					streamName = item.stream.name;
 				}
 
+				var disabled = 'opacity: 1';
+				var disabledText = '';
+				if(qsIsDesktopMode == true) {
+					disabled = 'opacity: 0.2'
+					disabledText = ' (Not available in desktop mode.)'
+				}
+
 				var images = `
 					<span style="color: darkgrey">#`+ streamName + `</span>
 					<img src="./media/images/line.png">
@@ -326,10 +357,9 @@ require(["js/qlik", './js/qsocks.bundle.js', './js/jquery.noty.packaged.min.js']
 					<a href="`+ host + `dataloadeditor/app/` + encodeURIComponent(doc.qDocId) + `" target="_blank"><img src="./media/images/dataeditor.png" title="Data Editor"></a>
 					<a href="`+ host + `datamodelviewer/app/` + encodeURIComponent(doc.qDocId) + `" target="_blank"><img src="./media/images/datamodel.png" title="Data Model Viewer"></a>
 					<img src="./media/images/line.png">
-					<a href="#" class="duplicateapp" data-appid="`+ doc.qDocId + `" data-appname="` + doc.qTitle + `"><img src="./media/images/copy.png" title="Duplicate app"></a>
+					<a href="#" class="duplicateapp" data-appid="`+ doc.qDocId + `" data-appname="` + doc.qTitle + `" style="`+disabled+`"><img src="./media/images/copy.png" title="Duplicate app `+disabledText+`"></a>
 					<a href="#" class="deleteapp" data-appid="`+ doc.qDocId + `" data-appname="` + doc.qTitle + `"><img src="./media/images/delete.png" title="Delete app" ></a>
 				`;
-
 
 				qsappshtml += '<div class="pixel-border"><div style="float:left;">' + '<a href="' + url + '" target="_blank">' + doc.qTitle + '</a></div><div style="float:right;">' + images + '</div></div>'
 				qsApps.push(doc)
@@ -341,8 +371,6 @@ require(["js/qlik", './js/qsocks.bundle.js', './js/jquery.noty.packaged.min.js']
 				});
 			}
 
-
-
 			var uniqueAreas = [];
 			for (var i = 0; i < areas.length; i++) {
 				var name = areas[i];
@@ -351,11 +379,7 @@ require(["js/qlik", './js/qsocks.bundle.js', './js/jquery.noty.packaged.min.js']
 
 			uniqueAreas.push('#unknown');
 			qsAreas = uniqueAreas;
-			//searchOptions.data.areas = uniqueAreas;
 			$('#qsapps').html(qsappshtml)
-			//console.log(qsApps)
-			//console.log(qsAreas)
-
 		});
 	}
 });
