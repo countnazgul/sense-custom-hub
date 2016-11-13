@@ -24,15 +24,15 @@
 </head>
 
 <body role="document" style="overflow: auto">
+	<a id="about" href="#"><img src="./media/images/info.png" width="12px" height="12px" style="margin-left: 5px"></a>
 	<div class="container" style="padding-top: 5px">
 		<div class="row">
 			<div class="col-xs-11">
 				<input id="search" type="text" style="width:100%" />
 			</div>
-			<div class="col-xs-1 test">
+			<div class="col-xs-1" style="text-align: center;">
 				<button type="button" class="btn btn-success glyphicon glyphicon-plus" style="background-color: #5fa945" data-toggle="modal"
-					data-target="#myModal"></button>
-				<span id="qsVersion" style="color: lightgray" class=""></span>
+					data-target="#myModal"></button>				
 			</div>
 		</div>
 	</div>
@@ -114,6 +114,29 @@
 			</div>
 		</div>
 	</div>
+
+	<div id="aboutModal" class="modal fade" id="confirm-delete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+		aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header modal-header-info">
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+					<h4 class="modal-title">About</h4>
+				</div>
+				<div class="modal-body">
+					<h4><strong>Custom HUB</strong></h4><br>
+					Qlik Sense Version: <span id="qsVersion"class=""></span><br>
+					Mashup Version: 0.10.2<br>
+					Repository:<a href="https://github.com/countnazgul/sense-custom-hub">https://github.com/countnazgul/sense-custom-hub</a><br>
+					Author: Stefan Stoichev (<a href="mailto:stefan.stoichev@gmail.com">stefan.stoichev@gmail.com</a>  <a href="https://twitter.com/countnazgul" target="_blank">@countnazgul</a>)<br>
+					License: MIT
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal" id="canceldelete" tabindex='1'>OK</button>
+				</div>
+			</div>
+		</div>
+	</div>	
 
 	<a id="navigate" href="#" target="_blank" style="display: none"></a>
 

@@ -1,14 +1,14 @@
 {
 	"type": "mashup",
 	"name": "Custom HUB",
-	"version": "0.10.1",
+	"version": "0.10.2",
 	"description": "Custom HUB",
 	"preview": "media/images/hub.png",
-	"homepage": "",
-	"author": "",
+	"homepage": ""https://github.com/countnazgul/sense-custom-hub,
+	"author": "stefan.stoichev@gmail.com",
 	"keywords": "qlik-sense, mashup",
-	"license": "",
-	"repository": "",
+	"license": "MIT",
+	"repository": "https://github.com/countnazgul/sense-custom-hub",
 	"dependencies": {
 		"qlik-sense": ">=2.1.x"
 	}

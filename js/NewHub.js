@@ -18,8 +18,6 @@ if (port.length > 0) {
 }
 var host = config.protocol + '//' + config.host + port + '/';
 
-console.log(host)
-
 var app;
 require.config({
 	baseUrl: (config.isSecure ? "https://" : "http://") + config.host + (config.port ? ":" + config.port : "") + config.prefix + "resources"
@@ -37,8 +35,14 @@ require(["js/qlik", './js/qsocks.bundle.js', './js/jquery.noty.packaged.min.js']
 		qsGlobal.isDesktopMode().then(function (isDesktopMode) {
 			qsIsDesktopMode = isDesktopMode;
 			Main();
-		})
-	})
+		});
+	});
+
+
+	$.get("./NewHub.qext", function (data) {
+		console.log(data.version)
+	});
+
 
 	function showNotification(text, type) {
 		var n = noty({
@@ -298,6 +302,9 @@ require(["js/qlik", './js/qsocks.bundle.js', './js/jquery.noty.packaged.min.js']
 			});
 	});
 
+	$('#about').on('click', function (e) {
+		$('#aboutModal').modal('show');
+	});
 
 
 	function Main() {
@@ -306,7 +313,7 @@ require(["js/qlik", './js/qsocks.bundle.js', './js/jquery.noty.packaged.min.js']
 		qsApps = [];
 		qsGlobal.productVersion()
 			.then(function (qsVersion) {
-				qsVersion = qsVersion.substr(0, qsVersion.indexOf('+'));
+				//qsVersion = qsVersion.substr(0, qsVersion.indexOf('+'));
 
 				$('#qsVersion').text(qsVersion);
 			})
