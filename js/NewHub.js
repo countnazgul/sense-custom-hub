@@ -4,19 +4,41 @@ var config = {
 	host: window.location.hostname,
 	prefix: prefix,
 	port: window.location.port,
-	isSecure: window.location.protocol === "https:"
+	isSecure: window.location.protocol === "https:",
+	protocol: window.location.protocol,
 };
+
+var qsGlobal = {};
+
+var port = config.port;
+
+if (port.length > 0) {
+	port = ':' + port
+}
+var host = config.protocol + '//' + config.host + port + '/';
+
+console.log(host)
 
 var app;
 require.config({
 	baseUrl: (config.isSecure ? "https://" : "http://") + config.host + (config.port ? ":" + config.port : "") + config.prefix + "resources"
 });
 
-require(["js/qlik", './js/qsocks.bundle.js'], function (qlik, qsocks) {
+require(["js/qlik", './js/qsocks.bundle.js', './js/jquery.noty.packaged.min.js'], function (qlik, qsocks, noty) {
 
 	var areas = [];
 	var qsApps = [];
 	var qsAreas = [];
+
+	function showNotification(text, type) {
+		var n = noty({
+			text: text,
+			layout: 'top',
+			theme: 'relax',
+			timeout: 1000,
+			type: type
+		});
+	}
 
 	var searchOptions = {
 		theme: "bootstrap",
@@ -38,8 +60,8 @@ require(["js/qlik", './js/qsocks.bundle.js'], function (qlik, qsocks) {
 					for (var i = 0; i < availableApps.length; i++) {
 
 						var searchName = availableApps[i].textContent;
-						if (searchName.indexOf('->') > -1) {
-							searchName = availableApps[i].textContent.substr(0, availableApps[i].textContent.indexOf(' ->'))
+						if (searchName.indexOf('Stream:') > -1) {
+							searchName = availableApps[i].textContent.substr(0, availableApps[i].textContent.indexOf(' Stream:'))
 						}
 
 						var t = $(obj).find('a');
@@ -86,12 +108,19 @@ require(["js/qlik", './js/qsocks.bundle.js'], function (qlik, qsocks) {
 			method: function (value, item) {
 				var fileName = item.appId.split('\\');
 				fileName = fileName[fileName.length - 1]; //.replace('.qvf', '');
-				var url = "http://localhost:4848/sense/app/" + encodeURIComponent(item.appId);
-				if (item.areas.length > 0) {
-					return '<div><a href="' + url + '" target="_blank">' + value + '</a>' + ' -> ' + item.areas + ' -> ' + fileName + '</div>';
-				} else {
-					return '<a href="' + url + '" target="_blank">' + value + '</a>' + ' -> ' + fileName;
+				var url = host + "sense/app/" + encodeURIComponent(item.appId);
+
+				var streamName = 'Home';
+
+				if (item.stream) {
+					streamName = item.stream.name;
 				}
+
+				//if (item.areas.length > 0) {
+				//	return '<div><a href="' + url + '" target="_blank">' + value + '</a>' + ' Stream: <strong>' + streamName + '</strong> ' + fileName + '</div>';
+				//} else {
+				return '<div class="searchheader"><a href="' + url + '" target="_blank">' + value + '</a></div><div class="searchcontent"><div> Stream: <strong>' + streamName + '</strong></div><div>File name: ' + fileName + '</div></div>';
+				//}
 			}
 		},
 		data: { "areas": [], "documents": [] },
@@ -116,37 +145,151 @@ require(["js/qlik", './js/qsocks.bundle.js'], function (qlik, qsocks) {
 		}
 	});
 
-	// 	$('#search').focusout(function () {
-	// console.log($(".easy-autocomplete").find("ul"))
-	// 		if ($('#search').val().length == 0) {
-	// 			$('.pixel-border').each(function (i, obj) {
-	// 				$(obj).css('display', 'block');
-	// 			});
-	// 		}
-	// 		$('#qsapps').css('padding-top', 10)
-	// 	})
-
 	function SortByTitle(a, b) {
 		var aName = a.qTitle.toLowerCase();
 		var bName = b.qTitle.toLowerCase();
 		return ((aName < bName) ? -1 : ((aName > bName) ? 1 : 0));
 	}
 
-	$('#newappcreate').on('click', function () {
-		qsocks.Connect(config).then(global => {
-			global.createApp($('#newappname').val()).then(function(app) {
-				console.log(app)
-			})
+	$('#radioBtn a').on('click', function () {
+		var sel = $(this).data('title');
+		var tog = $(this).data('toggle');
+		$('#' + tog).prop('value', sel);
 
-		});
-		console.log($('#newappname').val())
-		console.log($('#newappdescription').val())
+		$('a[data-toggle="' + tog + '"]').not('[data-title="' + sel + '"]').removeClass('active').addClass('notActive');
+		$('a[data-toggle="' + tog + '"][data-title="' + sel + '"]').removeClass('notActive').addClass('active');
+	});
+
+	$('#myModal').on('shown.bs.modal', function () {
+		$("#newappname").focus();
+	});
+
+	$('#confirmDelete').on('shown.bs.modal', function () {
+		$("#canceldelete").focus();
+	});
+
+	$('#deleteapp').keypress(function (e) {
+		if (e.which == 13) {
+			$('#deleteapp').click();
+		}
+	});
+
+	$('#newappcreate').on('click', function (e) {
+		if ($.trim($('#newappname').val()).length > 0) {
+			qsGlobal.createApp($('#newappname').val())
+				.then(function (app) {
+					$('#myModal').modal('hide');
+					$('#newappname').val('');
+					showNotification('"' + $('#newappname').val() + '" created!', 'success')
+
+					Main();
+					// var link = document.createElement('a');
+					// link.href = url;
+					// document.body.appendChild(link);
+					// link.click();
+
+					return console.log(app)
+				})
+				.catch(function (err) {
+					modalError(err.message);
+					$('#newappname').val('');
+				})
+		} else {
+			modalError("App name can't be empty");
+		}
 	})
 
-	qsocks.Connect(config).then(global => {
-		global.getDocList().then(function (docList) {
-			console.log(docList)
+	function modalError(error) {
+		if ($('#modalError').is(':animated')) {
+			$('#modalError').stop().animate({ opacity: '100' });
+		}
 
+		$('#modalError').text(error);
+		$('#modalError').css('display', 'block');
+		$("#modalError").fadeOut(5000, function () {
+			//
+			$('#modalError').text('');
+		});
+	}
+
+	$(document).on('click', ".deleteapp", function () {
+		var appId = $(this).attr('data-appid');
+		var appName = $(this).attr('data-appname');
+		$('#deletedappname').text(appName);
+		$('#deletedappid').text(appId);
+
+		$('#confirmDelete').modal('show');
+	});
+
+	// $(document).on('click', ".renameapp", function () {
+	// 	var appId = $(this).attr('data-appid');
+	// 	var appName = $(this).attr('data-appname');
+
+	// 	//$('#confirmDelete').modal('show');
+
+	// 	qsGlobal.сetAppProperties(appName)
+	// 		.then(function (app) {
+	// 		})
+	// });
+
+	$(document).on('click', ".duplicateapp", function () {
+		var appId = $(this).attr('data-appid');
+		var appName = $(this).attr('data-appname');
+
+		appName = appName + ' ' + Date.now();
+
+		qsGlobal.createApp(appName)
+			.then(function (app) {
+
+				showNotification('"' + appName + '" created!', 'success')
+
+				Main();
+				// var link = document.createElement('a');
+				// link.href = url;
+				// document.body.appendChild(link);
+				// link.click();
+
+				return console.log(app)
+			})
+			.catch(function (err) {
+				modalError(err.message);
+			})
+	});
+
+	$('#deleteapp').on('click', function (e) {
+		$('#confirmDelete').modal('hide');
+		qsGlobal.deleteApp($('#deletedappid').text())
+			.then(function (result) {
+				showNotification('"' + $('#deletedappname').text() + '" deleted!', 'success');
+				$('#deletedappname').text('');
+				Main();
+			})
+			.catch(function (err) {
+				showNotification(err.message, 'error');
+				$('#deletedappname').text('');
+			});
+	});
+
+	qsocks.Connect(config).then(global => {
+		qsGlobal = global;
+		Main();
+
+	})
+
+	function Main() {
+		$('#qsapps').empty()
+		qsappshtml = '';
+		qsApps = [];
+		qsGlobal.productVersion()
+			.then(function (qsVersion) {
+				qsVersion = qsVersion.substr(0, qsVersion.indexOf('+'));
+				$('#qsVersion').text(qsVersion);
+			})
+			.catch(function (err) {
+				showNotification(err.message, 'error');
+			});
+
+		qsGlobal.getDocList().then(function (docList) {
 			docList.sort(SortByTitle)
 			for (var d = 0; d < docList.length; d++) {
 
@@ -166,21 +309,39 @@ require(["js/qlik", './js/qsocks.bundle.js'], function (qlik, qsocks) {
 				if (doc.areas) {
 					areaTemp = doc.areas;
 				}
-				var url = "http://localhost:4848/sense/app/" + encodeURIComponent(doc.qDocId);
+				var url = host + "sense/app/" + encodeURIComponent(doc.qDocId);
 				var docfile = doc.qDocId.split('\\');
-				docfile = docfile[docfile.length - 1]
+				docfile = docfile[docfile.length - 1];
+
+				var streamName = 'Home';
+
+				if (doc.qMeta.stream) {
+					streamName = item.stream.name;
+				}
+
 				var images = `
-					<a href="http://localhost:4848/sense/app/`+ encodeURIComponent(doc.qDocId) + `/datamanager/datamanager"><img src="./media/images/datamanager.png" title="Data Manager"></a>
-					<a href="http://localhost:4848/dataloadeditor/app/`+ encodeURIComponent(doc.qDocId) + `"><img src="./media/images/dataeditor.png" title="Data Editor"></a>
-					<a href="http://localhost:4848/datamodelviewer/app/`+ encodeURIComponent(doc.qDocId) + `"><img src="./media/images/datamodel.png" title="Data Model Viewer"></a>
+					<span style="color: darkgrey">#`+ streamName + `</span>
 					<img src="./media/images/line.png">
-					<a href="http://localhost:4848/datamodelviewer/app/`+ encodeURIComponent(doc.qDocId) + `"><img src="./media/images/copy.png" title="Duplicate app"></a>
-					<a href="http://localhost:4848/datamodelviewer/app/`+ encodeURIComponent(doc.qDocId) + `"><img src="./media/images/delete.png" title="Delete app"></a>
+					<a href="`+ host + `sense/app/` + encodeURIComponent(doc.qDocId) + `/datamanager/datamanager" target="_blank"><img src="./media/images/datamanager.png" title="Data Manager"></a>
+					<a href="`+ host + `dataloadeditor/app/` + encodeURIComponent(doc.qDocId) + `" target="_blank"><img src="./media/images/dataeditor.png" title="Data Editor"></a>
+					<a href="`+ host + `datamodelviewer/app/` + encodeURIComponent(doc.qDocId) + `" target="_blank"><img src="./media/images/datamodel.png" title="Data Model Viewer"></a>
+					<img src="./media/images/line.png">
+					<a href="#" class="duplicateapp" data-appid="`+ doc.qDocId + `" data-appname="` + doc.qTitle + `"><img src="./media/images/copy.png" title="Duplicate app"></a>
+					<a href="#" class="deleteapp" data-appid="`+ doc.qDocId + `" data-appname="` + doc.qTitle + `"><img src="./media/images/delete.png" title="Delete app" ></a>
 				`;
+
+
 				qsappshtml += '<div class="pixel-border"><div style="float:left;">' + '<a href="' + url + '" target="_blank">' + doc.qTitle + '</a></div><div style="float:right;">' + images + '</div></div>'
 				qsApps.push(doc)
-				searchOptions.data.documents.push({ appName: doc.qTitle, areas: areaTemp, appId: doc.qDocId });
+				searchOptions.data.documents.push({
+					appName: doc.qTitle,
+					areas: areaTemp,
+					appId: doc.qDocId,
+					stream: doc.qMeta.stream
+				});
 			}
+
+
 
 			var uniqueAreas = [];
 			for (var i = 0; i < areas.length; i++) {
@@ -196,6 +357,6 @@ require(["js/qlik", './js/qsocks.bundle.js'], function (qlik, qsocks) {
 			//console.log(qsAreas)
 
 		});
-	});
+	}
 });
 

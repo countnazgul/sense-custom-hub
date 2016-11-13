@@ -1,8 +1,9 @@
 {
 	"type": "mashup",
-	"name": "NewHub",
-	"version": "1.0.0",
-	"description": "Basic single page mashup based on a Bootstrap with an image header",
+	"name": "Custom HUB",
+	"version": "0.9.0",
+	"description": "Custom HUB",
+	"preview": "media/images/hub.png",
 	"homepage": "",
 	"author": "",
 	"keywords": "qlik-sense, mashup",

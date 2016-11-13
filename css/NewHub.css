@@ -1,91 +1,82 @@
-/**
-* set padding to make room for bootstrap menu
-*
-*/
 body {
 	padding-bottom: 30px;
 }
 
-/*
-* need to set the height for objects
-* set top padding to make room for selection toolbar
-*/
-div.qvobject, div.qvplaceholder {
-	padding: 30px 10px 10px 10px;
-	height: 400px;
+.searchcontent {
+	font-size: smaller;
+	color: darkgray
 }
 
-#main {
-	width: 100%;
-	padding: 0;
+.searchheader {
+	font-size: big;
+	color: black
 }
 
-.image-header {
-	display: table;
-	position: relative;
-	margin-top: -20px;
-	width: 100%;
-	height: 30%;
-	background: url(../media/images/leaf.jpg) no-repeat center center scroll;
-	-webkit-background-size: cover;
-	-moz-background-size: cover;
-	background-size: cover;
-	-o-background-size: cover;
-	z-index: -99;
-
+.modal-header-success {
+    color:#fff;
+    padding:9px 15px;
+    border-bottom:1px solid #eee;
+    background-color: #5cb85c;
+    -webkit-border-top-left-radius: 5px;
+    -webkit-border-top-right-radius: 5px;
+    -moz-border-radius-topleft: 5px;
+    -moz-border-radius-topright: 5px;
+     border-top-left-radius: 5px;
+     border-top-right-radius: 5px;
 }
 
-.content-section-a {
-	background-color: #ECF0F1;
+.modal-header-danger {
+	color:#fff;
+    padding:9px 15px;
+    border-bottom:1px solid #eee;
+    background-color: #d9534f;
+    -webkit-border-top-left-radius: 5px;
+    -webkit-border-top-right-radius: 5px;
+    -moz-border-radius-topleft: 5px;
+    -moz-border-radius-topright: 5px;
+     border-top-left-radius: 5px;
+     border-top-right-radius: 5px;
 }
 
-.navbar {
-	margin-bottom: 0 !important;
+.container1 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-top: 5px;
 }
 
-.navbar-brand {
-	max-width: 345px;
-	overflow: hidden;
-	text-overflow: ellipsis;
-	white-space: nowrap;
+.pixel-border {
+    border: 1px solid lightgray;
+    background-color: white;
+    color: white;
 }
 
-/*
- * Overrides Bootstrap navbar z-index to avoid conflict with selections bar
- */
-.navbar-fixed-top {
-	position: relative;
-	z-index: 100;
+a:link,
+a:visited,
+a:hover,
+a:active {
+    color: gray;
+    font-weight: bold;
 }
 
-.qcmd {
-	cursor: pointer;
+body {
+    background-color: #f2f2f2
 }
 
-#footer {
-	background-color: #FEC956;
-	text-align: center;
-	padding-top: 30px;
-	padding-bottom: 30px;
-	margin-bottom: -30px;
+.test1{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-50%);
+    -webkit-transform: translateX(-50%) translateY(-50%);
 }
 
-#popup {
-	background-color: #7f8c8d;
-	color: #FFFFFF;
-	position: fixed;
-	padding: 10px;
-	margin: 10px;
-	bottom: 0;
-	right: 0;
-	display: none;
-	border-radius: 5px;
+#radioBtn .notActive{
+    color: black;
+    background-color: #fff;
 }
 
-.borderShadow {
-	margin: 15px 0;
-	background-color: #FFFFFF;
-	-webkit-box-shadow: 0 0 16px -5px rgba(50, 50, 50, 0.52);
-	-moz-box-shadow: 0 0 16px -5px rgba(50, 50, 50, 0.52);
-	box-shadow: 0 0 16px -5px rgba(50, 50, 50, 0.52);
+#radioBtn .active{
+    color: black;
+    background-color: lightgray;
 }
