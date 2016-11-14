@@ -38,12 +38,6 @@ require(["js/qlik", './js/qsocks.bundle.js', './js/jquery.noty.packaged.min.js']
 		});
 	});
 
-
-	$.get("./NewHub.qext", function (data) {
-		console.log(data.version)
-	});
-
-
 	function showNotification(text, type) {
 		var n = noty({
 			text: text,
@@ -348,7 +342,7 @@ require(["js/qlik", './js/qsocks.bundle.js', './js/jquery.noty.packaged.min.js']
 				var streamName = 'Home';
 
 				if (doc.qMeta.stream) {
-					streamName = item.stream.name;
+					streamName = doc.qMeta.stream.name;
 				}
 
 				var disabled = 'opacity: 1';

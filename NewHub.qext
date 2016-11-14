@@ -1,7 +1,7 @@
 {
 	"type": "mashup",
 	"name": "Custom HUB",
-	"version": "0.10.2",
+	"version": "0.10.3",
 	"description": "Custom HUB",
 	"preview": "media/images/hub.png",
 	"homepage": ""https://github.com/countnazgul/sense-custom-hub,
