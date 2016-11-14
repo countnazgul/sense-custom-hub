@@ -348,7 +348,7 @@ require(["js/qlik", './js/qsocks.bundle.js', './js/jquery.noty.packaged.min.js']
 				var streamName = 'Home';
 
 				if (doc.qMeta.stream) {
-					streamName = item.stream.name;
+					streamName = doc.qMeta.stream.name;
 				}
 
 				var disabled = 'opacity: 1';
