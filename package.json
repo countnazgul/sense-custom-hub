@@ -1,6 +1,6 @@
 {
-  "name": "qlik-sense-custom-hub",
-  "version": "0.10.4",
+  "name": "sense-custom-hub",
+  "version": "0.10.5",
   "description": "Qlik Sense Custom HUB",
   "license": "MIT",
   "repository": "https://github.com/countnazgul/sense-custom-hub/",
@@ -8,5 +8,8 @@
     "name": "Stefan Stoichev",
     "email": "stefan.stoichev@gmail.com",
     "url": "https://sstoichev.eu"
+  },
+  "devDependencies": {
+    "gulp": "github:gulpjs/gulp#4.0"
   }
 }
