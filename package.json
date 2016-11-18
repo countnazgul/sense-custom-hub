@@ -1,0 +1,12 @@
+{
+  "name": "qlik-sense-custom-hub",
+  "version": "0.10.4",
+  "description": "Qlik Sense Custom HUB",
+  "license": "MIT",
+  "repository": "https://github.com/countnazgul/sense-custom-hub/",
+  "author": {
+    "name": "Stefan Stoichev",
+    "email": "stefan.stoichev@gmail.com",
+    "url": "https://sstoichev.eu"
+  }
+}
