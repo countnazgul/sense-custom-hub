@@ -1,2 +1,5 @@
 .tmp/
+node_modules/
 *.yml
+gulpfile.js
+src/js/NewHub2.js

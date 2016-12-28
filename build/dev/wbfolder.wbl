@@ -12,6 +12,7 @@ js/jquery.noty.packaged.min.js;
 js/NewHub.js;
 js/qsocks.bundle.js;
 js/select2.full.min.js;
+js/vue.min.js;
 media/images/copy.png;
 media/images/dataeditor.png;
 media/images/datamanager.png;

@@ -1,6 +1,6 @@
 {
   "name": "sense-custom-hub",
-  "version": "0.10.5",
+  "version": "0.12.0",
   "description": "Qlik Sense Custom HUB",
   "license": "MIT",
   "repository": "https://github.com/countnazgul/sense-custom-hub/",

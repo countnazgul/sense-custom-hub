@@ -14,7 +14,7 @@ var qsIsDesktopMode = false;
 var port = config.port;
 
 if (port.length > 0) {
-	port = ':' + port
+	port = ':' + port;
 }
 var host = config.protocol + '//' + config.host + port + '/';
 
