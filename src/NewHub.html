@@ -38,14 +38,15 @@
         <div class="container" style="padding-top: 5px">
             <div class="row">				 
                 <div class="col-xs-11">					
-                    <input id="search" type="text" style="width:100%" />					
+                    <input v-model="searchTerm" v-on:keyup.esc="clear" id="search" type="search" style="width:99%; float:left;" />
+					<a href="#"><span v-on:click="clear" class="lui-icon lui-icon--clear-selections" style="width:1%; padding-left: 5px; padding-top: 5px;" title="Clear search"></span></a>
                 </div>
                 <div class="col-xs-1" style="text-align: end;">
                     <div v-bind:class=" { 'modal-open': showCreate }">						
                         <!--<button v-on:click="toggleCreate" type="button" class="btn btn-success glyphicon glyphicon-plus" style="background-color: #5fa945" title="Create New App"></button>-->
-						<a v-on:click="getApps" href="#"><span class="lui-icon lui-icon--sync" title="Refresh apps list" style="padding-right:5px; font-size: 15px"></span></a>
-						<a v-on:click="toggleCreate" href="#"><span  class="lui-icon lui-icon--add" title="Create New App"style="font-size: 15px"></span></a>
-						<a href="#" v-on:click="toggleAbout"><span class="lui-icon lui-icon--info" width="12px" height="12px" style="margin-left: 5px; font-size: 15px"></span></a>
+						<a v-on:click="getApps" href="#"><span class="lui-icon lui-icon--sync" title="Refresh apps list" style="padding-right:5px; font-size: 15px; padding-top: 5px;"></span></a>
+						<a v-on:click="toggleCreate" href="#"><span  class="lui-icon lui-icon--add" title="Create New App"style="font-size: 15px; padding-top: 5px;"></span></a>
+						<a href="#" v-on:click="toggleAbout"><span class="lui-icon lui-icon--info" title="About" width="12px" height="12px" style="margin-left: 5px; font-size: 15px; padding-top: 5px;"></span></a>
                         <!-- Create app modal -->
                         <div v-bind:class="{ in: showCreate }" v-bind:style="modalStyleCreate" class="modal fade" role="dialog" tabindex='-1'>
                             <div class="modal-dialog">
@@ -92,13 +93,13 @@
         <div class="container" style="padding-top: 30px">
             <div id="qsappsTest" class="block-grid-xs-1 block-grid-sm-2 block-grid-md-3 block-grid-lg-1">
                 <!--<div >-->
-                <div v-for="doc in docs" class="pixel-border">
+                <div v-for="doc in docs" class="pixel-border" v-bind:style="{display: display}">
                     <div style="float:left;">
                         <a v-bind:href="doc.CustomHub.urls.overview" target="_blank"> {{ doc.qTitle }} </a>
 
                     </div>
                     <div style="float:right;">
-                        <span style="color: darkgrey"><span class="lui-icon lui-icon--stream"></span>{{ doc.CustomHub.stream }}</span>
+                        <span class="lui-icon lui-icon--stream"></span><span style="color: darkgrey">{{ doc.CustomHub.stream }}</span>
                         <img src="./media/images/line.png">
                         <a v-bind:href="doc.CustomHub.urls.overview" target="_blank"><span class="lui-icon lui-icon--home" title="App Overview"></span></a>
                         <a v-bind:href="doc.CustomHub.urls.datamanager" target="_blank"><span class="lui-icon lui-icon--edit" title="Data Manager"></span></a>
@@ -146,7 +147,7 @@
                                 <div class="modal-body">
                                     <h4><strong>Custom HUB</strong></h4>
                                     <br> Qlik Sense Version: <span class="">{{ qsVersion }}</span>
-                                    <br> Mashup Version: 0.12.0
+                                    <br> Mashup Version: 0.12.1
                                     <br> Repository:
                                     <a href="https://github.com/countnazgul/sense-custom-hub">https://github.com/countnazgul/sense-custom-hub</a>
                                     <br> Author: Stefan Stoichev (<a href="mailto:stefan.stoichev@gmail.com">stefan.stoichev@gmail.com</a> <a href="https://twitter.com/countnazgul" target="_blank">@countnazgul</a>)

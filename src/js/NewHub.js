@@ -19,10 +19,10 @@ require.config({
     baseUrl: (config.isSecure ? "https://" : "http://") + config.host + (config.port ? ":" + config.port : "") + config.prefix + "resources"
 });
 
-require(['./js/qsocks.bundle.js', './js/vue.min.js', './css/leonardo-ui/leonardo-ui.js'], function (qsocks, vue) {
+require(['./js/qsocks.bundle.js', './js/vue.min.js',  './css/leonardo-ui/leonardo-ui.js'], function (qsocks, Vue) {
 
 
-    var Toggle = vue.extend({
+    var Toggle = Vue.extend({
         template: '#vue-toggle',
         props: ['values', 'linkSelected', 'default'],
         ready: function () {
@@ -35,9 +35,9 @@ require(['./js/qsocks.bundle.js', './js/vue.min.js', './css/leonardo-ui/leonardo
             }
         }
     });
-    vue.component('vue-toggle', Toggle);
+    Vue.component('vue-toggle', Toggle);
 
-    var vueApps = new vue({
+    var vueApps = new Vue({
         el: '#qsapps',
         components: Toggle,
         data: {
@@ -58,9 +58,21 @@ require(['./js/qsocks.bundle.js', './js/vue.min.js', './css/leonardo-ui/leonardo
                 'manager': 'Data Manager'
             },
             linkSelected: 'Data Editor',
-            openoncreate: true
+            openoncreate: true,
+            loaded: false,
+            searchTerm: '',
+            display: 'block'
         },
         methods: {
+            clear: function () {
+                this.searchTerm = '';
+                //this.display = 'block';
+                $('.pixel-border').each(function (i, obj) {
+                   $(obj).css('display', 'block');
+                });
+
+                $('#search').focus();
+            },
             createapp: function () {
                 var self = this;
                 var newappname = this.newappname;
@@ -91,7 +103,7 @@ require(['./js/qsocks.bundle.js', './js/vue.min.js', './css/leonardo-ui/leonardo
                                 }
 
                                 self.navigate = href;
-                                vue.nextTick(function () {
+                                Vue.nextTick(function () {
                                     document.getElementById('navigate').click();
                                     self.navigate = '#';
                                 })
@@ -136,6 +148,8 @@ require(['./js/qsocks.bundle.js', './js/vue.min.js', './css/leonardo-ui/leonardo
             },
             getApps: function () {
                 var self = this;
+                
+                // self.$refs.search.focus();
                 qsappshtml = '';
                 qsApps = [];
                 self.qsGlobal.productVersion()
@@ -145,50 +159,79 @@ require(['./js/qsocks.bundle.js', './js/vue.min.js', './css/leonardo-ui/leonardo
                     .catch(function (err) {
                         showNotification(err.message, 'error');
                     });
+                return self.qsGlobal.getStreamList().then(function (streamList) {
+                    streamList.push('Home');
 
-                return self.qsGlobal.getDocList().then(function (docList) {
-                    docList.sort(SortByTitle)
-                    searchOptions.data.documents = [];
-
-                    for (var d = 0; d < docList.length; d++) {
-                        var doc = docList[d];
-                        var docIdEncoded = encodeURIComponent(doc.qDocId);
-                        doc.CustomHub = {};
-                        doc.CustomHub.urls = {};
-
-                        var url = host + "sense/app/" + encodeURIComponent(doc.qDocId);
-
-                        doc.CustomHub.urls.overview = host + 'sense/app/' + docIdEncoded;
-                        doc.CustomHub.urls.datamanager = host + 'sense/app/' + docIdEncoded + '/datamanager/datamanager';
-                        doc.CustomHub.urls.dataeditor = host + 'dataloadeditor/app/' + docIdEncoded;
-                        doc.CustomHub.urls.dataviewer = host + 'datamodelviewer/app/' + docIdEncoded;
-
-                        doc.CustomHub.opacity = (self.qsIsDesktopMode == true) ? 0.2 : 1;
-                        doc.CustomHub.stream = (doc.qMeta.stream) ? doc.qMeta.stream.name : 'Home';
-
-                        var docDescr = doc.qMeta.description;
-
-                        var docfile = doc.qDocId.split('\\');
-                        docfile = docfile[docfile.length - 1];
-
-                        var streamName = 'Home';
-
-                        if (doc.qMeta.stream) {
-                            streamName = doc.qMeta.stream.name;
-                        }
-
-                        qsApps.push(doc);
-                        searchOptions.data.documents.push({
-                            appName: doc.qTitle,
+                    for (var i = 0; i < streamList.length; i++) {
+                        searchOptions.data.streams.push({
+                            appName: streamList[i],
+                            type: 'stream',
                             areas: '',
-                            appId: doc.qDocId,
-                            stream: doc.qMeta.stream
+                            appId: '',
+                            stream: ''
                         });
                     }
 
-                    self.docs = docList;
-                    showNotification('Apps list is populated', 'success');
-                });
+                    return self.qsGlobal.getDocList().then(function (docList) {
+                        docList.sort(SortByTitle)
+                        searchOptions.data.documents = [];
+
+                        for (var d = 0; d < docList.length; d++) {
+                            var doc = docList[d];
+                            var docIdEncoded = encodeURIComponent(doc.qDocId);
+                            doc.CustomHub = {};
+                            doc.CustomHub.urls = {};
+
+                            var url = host + "sense/app/" + encodeURIComponent(doc.qDocId);
+
+                            doc.CustomHub.urls.overview = host + 'sense/app/' + docIdEncoded;
+                            doc.CustomHub.urls.datamanager = host + 'sense/app/' + docIdEncoded + '/datamanager/datamanager';
+                            doc.CustomHub.urls.dataeditor = host + 'dataloadeditor/app/' + docIdEncoded;
+                            doc.CustomHub.urls.dataviewer = host + 'datamodelviewer/app/' + docIdEncoded;
+
+                            doc.CustomHub.opacity = (self.qsIsDesktopMode == true) ? 0.2 : 1;
+                            doc.CustomHub.stream = (doc.qMeta.stream) ? doc.qMeta.stream.name : 'Home';
+
+                            var docDescr = doc.qMeta.description;
+
+                            var docfile = doc.qDocId.split('\\');
+                            docfile = docfile[docfile.length - 1];
+
+                            var streamName = 'Home';
+
+                            if (doc.qMeta.stream) {
+                                streamName = doc.qMeta.stream.name;
+                            }
+
+                            qsApps.push(doc);
+                            searchOptions.data.documents.push({
+                                appName: doc.qTitle,
+                                type: 'app',
+                                areas: '',
+                                appId: doc.qDocId,
+                                stream: streamName
+                            });
+                        }
+
+                        self.docs = docList;
+
+                        if (self.loaded == true) {
+                            showNotification('Apps list is populated', 'success');
+                        } else {
+                            self.loaded = true;
+                        }                        
+
+                    });
+                })
+
+            },
+            openApp: function (appId) {
+                var href = host + "sense/app/" + encodeURIComponent(appId)
+                this.navigate = href;
+                Vue.nextTick(function () {
+                    document.getElementById('navigate').click();
+                    self.navigate = '#';
+                })
             },
             toggleCreate() { this.showCreate = !this.showCreate; },
             toggleDelete() { this.showDelete = !this.showDelete; },
@@ -283,9 +326,21 @@ require(['./js/qsocks.bundle.js', './js/vue.min.js', './css/leonardo-ui/leonardo
                 }
 
                 $('#qsappsTest').css('padding-top', 0)
+            },
+            onChooseEvent: function () {
+                var index = $("#search").getSelectedItemIndex();
+                var appObj = $("#search").getItemData(index);
+
+                if (appObj.type == 'stream') {
+                    $('.pixel-border').each(function (i, obj) {
+                        if (appObj.appName == obj.children[1].children[1].innerText) {
+                            $(obj).css('display', 'block');
+                        }
+                    });
+                }
+                //vueApps.openApp(appObj.appId);
             }
         },
-        //getValue: 'name',
         getValue: function (element) {
             return element.appName;
         },
@@ -309,21 +364,28 @@ require(['./js/qsocks.bundle.js', './js/vue.min.js', './css/leonardo-ui/leonardo
                 //}
             }
         },
-        data: { "areas": [], "documents": [] },
+        data: { "streams": [], "documents": [] },
         categories: [
-            // {
-            // 	listLocation: "areas",
-            // 	header: "-- Areas --"
-            // },
+            {
+                listLocation: "streams",
+                maxNumberOfElements: 20,
+                header: "-- Streams --"
+            },
             {
                 listLocation: "documents",
-                maxNumberOfElements: 40,
+                maxNumberOfElements: 20,
                 header: "-- Documents --"
             }
         ]
     };
 
     $("#search").easyAutocomplete(searchOptions);
+
+// $("#search").keydown(function(event){
+//     if(event.key == "Escape") {
+//         vueApps.clear();
+//     }
+// })
 
     function SortByTitle(a, b) {
         var aName = a.qTitle.toLowerCase();
