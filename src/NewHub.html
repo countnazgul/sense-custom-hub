@@ -91,13 +91,13 @@
         </div>
 
         <div class="container" style="padding-top: 30px">
-            <div id="qsappsTest" class="block-grid-xs-1 block-grid-sm-2 block-grid-md-3 block-grid-lg-1">
-                <!--<div >-->
-                <div v-for="doc in docs" class="pixel-border" v-bind:style="{display: display}">
+            <div id="qsappsTest" class="block-grid-xs-1 block-grid-sm-2 block-grid-md-3 " v-bind:class='listOrGrid.class'>
+					<a href='#' style="padding: 0px"><span v-on:click="layoutChange" class='lui-icon' v-bind:class='listOrGrid.iconClass'></span></a>
+                <div v-for="doc in docs" class="pixel-border" v-bind:style="{display: display, margin: listOrGrid.margin}">
                     <div style="float:left;">
                         <a v-bind:href="doc.CustomHub.urls.overview" target="_blank"> {{ doc.qTitle }} </a>
-
                     </div>
+					< v-if="listOrGrid.list" br>
                     <div style="float:right;">
                         <span class="lui-icon lui-icon--stream" style="padding-right: 5px; color:gray"></span><span style="color: darkgrey">{{ doc.CustomHub.stream }}</span>
                         <!--<img src="./media/images/line.png">-->
@@ -149,7 +149,7 @@
                                 <div class="modal-body">
                                     <h4><strong>Custom HUB</strong></h4>
                                     <br> Qlik Sense Version: <span class="">{{ qsVersion }}</span>
-                                    <br> Mashup Version: 0.12.2
+                                    <br> Mashup Version: 0.12.3
                                     <br> Repository:
                                     <a href="https://github.com/countnazgul/sense-custom-hub">https://github.com/countnazgul/sense-custom-hub</a>
                                     <br> Author: Stefan Stoichev (<a href="mailto:stefan.stoichev@gmail.com">stefan.stoichev@gmail.com</a> <a href="https://twitter.com/countnazgul" target="_blank">@countnazgul</a>)

@@ -19,7 +19,7 @@ require.config({
     baseUrl: (config.isSecure ? "https://" : "http://") + config.host + (config.port ? ":" + config.port : "") + config.prefix + "resources"
 });
 
-require(['./js/qsocks.bundle.js', './js/vue.min.js',  './css/leonardo-ui/leonardo-ui.js'], function (qsocks, Vue) {
+require(['./js/qsocks.bundle.js', './js/vue.min.js', './css/leonardo-ui/leonardo-ui.js'], function (qsocks, Vue) {
 
 
     var Toggle = Vue.extend({
@@ -61,14 +61,20 @@ require(['./js/qsocks.bundle.js', './js/vue.min.js',  './css/leonardo-ui/leonard
             openoncreate: true,
             loaded: false,
             searchTerm: '',
-            display: 'block'
+            display: 'block',
+            listOrGrid: { 
+                class: 'block-grid-lg-1', 
+                iconClass: 'lui-icon--grid',
+                margin: '0px',
+                list: true 
+            }
         },
         methods: {
             clear: function () {
                 this.searchTerm = '';
                 //this.display = 'block';
                 $('.pixel-border').each(function (i, obj) {
-                   $(obj).css('display', 'block');
+                    $(obj).css('display', 'block');
                 });
 
                 $('#search').focus();
@@ -148,7 +154,7 @@ require(['./js/qsocks.bundle.js', './js/vue.min.js',  './css/leonardo-ui/leonard
             },
             getApps: function () {
                 var self = this;
-                
+
                 // self.$refs.search.focus();
                 qsappshtml = '';
                 qsApps = [];
@@ -219,7 +225,7 @@ require(['./js/qsocks.bundle.js', './js/vue.min.js',  './css/leonardo-ui/leonard
                             showNotification('Apps list is populated', 'success');
                         } else {
                             self.loaded = true;
-                        }                        
+                        }
 
                     });
                 })
@@ -232,6 +238,19 @@ require(['./js/qsocks.bundle.js', './js/vue.min.js',  './css/leonardo-ui/leonard
                     document.getElementById('navigate').click();
                     self.navigate = '#';
                 })
+            },
+            layoutChange: function () {
+                if (this.listOrGrid.class == 'block-grid-lg-1') {
+                    this.listOrGrid.class = 'block-grid-lg-4';
+                    this.listOrGrid.iconClass = 'lui-icon--list';
+                    this.listOrGrid.list = true;
+                    this.listOrGrid.margin = '0px';
+                } else {
+                    this.listOrGrid.class = 'block-grid-lg-1';
+                    this.listOrGrid.iconClass = 'lui-icon--grid';
+                    this.listOrGrid.list = false;
+                    this.listOrGrid.margin = '0px';
+                }
             },
             toggleCreate() { this.showCreate = !this.showCreate; },
             toggleDelete() { this.showDelete = !this.showDelete; },
@@ -381,11 +400,11 @@ require(['./js/qsocks.bundle.js', './js/vue.min.js',  './css/leonardo-ui/leonard
 
     $("#search").easyAutocomplete(searchOptions);
 
-// $("#search").keydown(function(event){
-//     if(event.key == "Escape") {
-//         vueApps.clear();
-//     }
-// })
+    // $("#search").keydown(function(event){
+    //     if(event.key == "Escape") {
+    //         vueApps.clear();
+    //     }
+    // })
 
     function SortByTitle(a, b) {
         var aName = a.qTitle.toLowerCase();
